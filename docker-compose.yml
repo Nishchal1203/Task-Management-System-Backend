@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://postgres:root123@mediaamp-db-1:5432/taskmanager
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=x4AP+bb477LbCqAWPMVUkIPKNDJQWAF/SlqMcUMWsww=
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    build: .
+    command: celery -A celery_app.celery worker --loglevel=info
+    user: "1000:1000"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://postgres:root123@mediaamp-db-1:5432/taskmanager
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=x4AP+bb477LbCqAWPMVUkIPKNDJQWAF/SlqMcUMWsww=
+      - CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP=true
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root123
+      - POSTGRES_DB=taskmanager
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data: 
