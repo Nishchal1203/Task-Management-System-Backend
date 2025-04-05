@@ -1,0 +1,104 @@
+= API Reference Guide
+
+This AsciiDoc file documents the API endpoints for the Task Management System Backend.
+
+== Authentication
+
+=== POST /register
+Register a new user.
+
+.Request Body (JSON)
+[source, json]
+{
+  "username": "string",
+  "email": "user@example.com",
+  "password": "string"
+}
+
+=== POST /login
+Login and retrieve JWT access token.
+
+.Request Body (JSON)
+[source, json]
+{
+  "username": "string",
+  "password": "string"
+}
+
+.Response (JSON)
+[source, json]
+{
+  "access_token": "jwt.token.here"
+}
+
+== Task Endpoints
+
+=== POST /task
+Create a new task (Authenticated Users).
+
+.Request Body (JSON)
+[source, json]
+{
+  "title": "Task Title",
+  "description": "Task description"
+}
+
+=== PUT /task/{task_id}
+Update an existing task.
+
+.Request Body (JSON)
+[source, json]
+{
+  "title": "Updated Title",
+  "description": "Updated description"
+}
+
+=== DELETE /task/{task_id}
+Soft delete a task.
+
+=== GET /task/{task_id}
+Get details of a single task.
+
+=== GET /tasks
+Retrieve paginated list of tasks.
+
+.Optional Query Params
+- page: integer
+- per_page: integer
+- date: YYYY-MM-DD (optional, uses Redis cache)
+
+== Admin Endpoints
+
+=== POST /upload-csv
+Bulk upload tasks via a CSV file (Admin only).
+
+.Request Headers
+- Content-Type: multipart/form-data
+- Authorization: Bearer <access_token>
+
+.Body
+- file: The CSV file with task data
+
+== Response Codes
+
+|===
+| Code | Meaning
+
+| 200 | OK
+| 201 | Created
+| 400 | Bad Request
+| 401 | Unauthorized
+| 403 | Forbidden
+| 404 | Not Found
+| 500 | Internal Server Error
+|===
+
+== Notes
+- Use JWT tokens in the `Authorization` header.
+- Redis is used to cache filtered results by date for `/tasks?date=`.
+- Only admins can upload CSV files.
+
+== Sample Auth Header
+[source, http]
+Authorization: Bearer your.jwt.token
+
