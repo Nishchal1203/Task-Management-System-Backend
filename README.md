@@ -22,14 +22,21 @@ A robust Flask-based backend system for managing tasks with user authentication,
 ```text
 📦 task-manager
 ├── app
-│   ├── __init__.py         # App factory and extensions
-│   ├── models.py           # SQLAlchemy models
-│   ├── tasks.py            # Celery background tasks
-├── api
-│   └── __init__.py         # API routes and logic
+    ├── __init__.py         # App factory and extensions
+    ├── models.py           # SQLAlchemy models
+    ├── config.py  
+    ├── tasks               # Celery background tasks
+        └── celery.py
+    ├── api
+      └── __init__.py       # API routes and logic
+├── migrations
+     └── versions/
+     └── alembic.ini
+     └── env.py
 ├── scripts
 │   └── init_db.py          # Database initialization script
-├── config.py               # Environment-based config
+    └── generate_Secret_key.py
+├── celery_app.py           # Create a Celery app in flask
 ├── Dockerfile              # Application container
 ├── docker-compose.yml      # Multi-container definition
 ├── requirements.txt        # Python dependencies
